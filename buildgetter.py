@@ -45,7 +45,6 @@ def get_build_order(players_object, loaded_replay):
 
                         unit_data = (unit_name, unit_time)
 
-
                 match contains_substring('Build', event.ability_name):
                     case False:
                         pass
@@ -58,10 +57,13 @@ def get_build_order(players_object, loaded_replay):
 
         players_object[key]['build'] = building
 
-    print(players_object)
+    pprint(players_object)
     return players_object\
 
+
+
 def contains_substring(sub_string, parent_string):
+
     try:
         parent_string.index(sub_string)
         return True
