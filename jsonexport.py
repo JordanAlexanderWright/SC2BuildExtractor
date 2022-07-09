@@ -3,7 +3,7 @@ import os
 from glob import glob
 from pathlib import Path
 
-#
+
 # This will check if the path you want to use exists, and if it doesn't, will create it
 def create_path(folder_name):
     dir_name = Path(folder_name)
@@ -22,7 +22,7 @@ def json_file_creator(data):
     #     file.write(json.dumps(data))
     #     file.close()
 
-    with open(f'{file_name}.json', 'w', encoding='utf-8') as f:
+    with open(f'./builds/{file_name}.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
         f.close()
 
