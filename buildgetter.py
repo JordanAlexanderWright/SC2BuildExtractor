@@ -63,7 +63,7 @@ def get_build_order(players_object, loaded_replay):
                         try:
 
                             # Born time /1.4 because the built-in seconds are sped up to 1.4 speed, for faster game mode
-                            converted_start_time = floor((born_time/1.4 - build_times[unit_name.lower()]))
+                            converted_start_time = (born_time/1.4 - build_times[unit_name.lower()])
 
                             building.append([unit_name, converted_start_time, unit_supply])
 
@@ -76,7 +76,7 @@ def get_build_order(players_object, loaded_replay):
                     if event.unit_controller.name == players_object[key]['name']:
 
                         unit_name = event.unit.name
-                        unit_time = floor(event.second/1.4)
+                        unit_time = event.second/1.4
                         unit_supply = 0
 
                         building.append([unit_name, unit_time, unit_supply])
@@ -88,7 +88,7 @@ def get_build_order(players_object, loaded_replay):
         # Creating a supply data point
         supply_count = 12
         for item in players_object[key]['build']:
-
+            item[1] = floor(item[1])
             unit_supply = item[2]
             item[2] = 0 + supply_count
             supply_count += unit_supply
