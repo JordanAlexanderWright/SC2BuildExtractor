@@ -97,9 +97,6 @@ def main():
     path = sys.argv[1]
     replay = sc2reader.load_replay(path)
 
-    # summary = sc2reader.load_game_summary(path)
-    #
-    # print(summary)
     players = {
         'player1': {'name': replay.teams[0].players[0].name,
                     'build': []
