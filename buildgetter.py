@@ -46,6 +46,8 @@ build_times = {
 
 def get_build_order(players_object, loaded_replay):
 
+    # Getting lists for each player
+
     for key in players_object.keys():
         building = []
 
@@ -56,13 +58,14 @@ def get_build_order(players_object, loaded_replay):
 
                         unit_name = event.unit.name
                         born_time = event.second
+                        unit_supply = event.unit.supply
 
                         try:
 
                             # Born time /1.4 because the built-in seconds are sped up to 1.4 speed, for faster game mode
                             converted_start_time = floor((born_time/1.4 - build_times[unit_name.lower()]))
 
-                            building.append((unit_name, converted_start_time))
+                            building.append([unit_name, converted_start_time, unit_supply])
 
                         except KeyError:
 
@@ -74,11 +77,21 @@ def get_build_order(players_object, loaded_replay):
 
                         unit_name = event.unit.name
                         unit_time = floor(event.second/1.4)
+                        unit_supply = 0
 
-                        building.append((unit_name, unit_time))
+                        building.append([unit_name, unit_time, unit_supply])
 
+        # Have to sort the build items before doing supply, due to it being out of the "event" order
         players_object[key]['build'] = building
         players_object[key]['build'].sort(key=lambda x: x[1])
+
+        # Creating a supply data point
+        supply_count = 12
+        for item in players_object[key]['build']:
+
+            unit_supply = item[2]
+            item[2] = 0 + supply_count
+            supply_count += unit_supply
 
     return players_object
 
