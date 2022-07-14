@@ -121,7 +121,12 @@ def main():
 
     create_path('builds')
     get_build_order(players, replay)
-    json_file_creator([players])
+    player1 = players['player1']
+    player2 = players['player2']
+
+    pprint(player1)
+    pprint(player2)
+    json_file_creator(player1, player2)
 
 
 if __name__ == '__main__':

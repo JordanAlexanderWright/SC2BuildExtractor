@@ -14,13 +14,20 @@ def create_path(folder_name):
         return dir_name
 
 
-def json_file_creator(data):
+def json_file_creator(player1, player2):
 
-    file_name = input('What would you like to name the build?')
+    file_name = input('What would you like to name the game?')
 
-    with open(f'./builds/{file_name}.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
+    # Saving a build order for player1
+    with open(f'./builds/{file_name}{player1["name"]}.json', 'w', encoding='utf-8') as f:
+        json.dump(player1, f, ensure_ascii=False, indent=4)
         f.close()
+
+    with open(f'./builds/{file_name}{player2["name"]}.json', 'w', encoding='utf-8') as f:
+        json.dump(player2, f, ensure_ascii=False, indent=4)
+        f.close()
+
+    # Saving Creating ab uild order for player2
 
 
 if __name__ == "__main__":
