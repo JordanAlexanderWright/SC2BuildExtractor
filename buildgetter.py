@@ -38,6 +38,42 @@ build_times = {
     'raven': 43,
     'battlecruiser': 64,
     'planetaryfortress': 36,
+
+}
+
+upgrade_times = {
+    'ShieldWall',
+    'HighCapacityBarrels',
+    'Stimpack',
+    'BansheeCloak',
+    'CycloneLockOnDamageUpgrade',
+    'PunisherGrenades',
+    'TerranVehicleWeaponsLevel1',
+    'RavenCorvidReactor',
+    'DrillClaws',
+    'TerranInfantryWeaponsLevel1',
+    'TerranInfantryArmorsLevel1',
+    'MedivacIncreaseSpeedBoost',
+    'TerranVehicleAndShipArmorsLevel1',
+    'SmartServos',
+    'PersonalCloaking',
+    'TerranVehicleWeaponsLevel2',
+    'BansheeSpeed',
+    'HiSecAutoTracking',
+    'BattlecruiserEnableSpecializations',
+    'EnhancedShockwaves',
+    'TerranBuildingArmor',
+    'TerranInfantryWeaponsLevel2',
+    'TerranInfantryArmorsLevel2',
+    'TerranVehicleAndShipArmorsLevel2',
+    'TerranShipWeaponsLevel1',
+    'LiberatorAGRangeUpgrade',
+    'TerranInfantryWeaponsLevel3',
+    'TerranInfantryArmorsLevel3',
+    'TerranShipWeaponsLevel2',
+    'TerranVehicleWeaponsLevel3',
+    'TerranVehicleAndShipArmorsLevel3',
+    'TerranShipWeaponsLevel3'
 }
 
 
@@ -50,6 +86,7 @@ def get_build_order(players_object, loaded_replay):
 
     for key in players_object.keys():
         building = []
+        upgrade_list = []
 
         for event in loaded_replay.events:
             if event.second > 0:
@@ -81,6 +118,17 @@ def get_build_order(players_object, loaded_replay):
 
                         building.append([unit_name, unit_time, unit_supply])
 
+                if event.name == 'UpgradeCompleteEvent':
+                    # print(event)
+
+                    if (event.upgrade_type_name != 'SprayTerran'):
+                        upgrade_name = event.upgrade_type_name
+                        upgrade_time = event.second/1.4
+                        upgrade_supply = 0
+
+                        building.append([upgrade_name, upgrade_time, upgrade_supply])
+
+
         # Have to sort the build items before doing supply, due to it being out of the "event" order
         players_object[key]['build'] = building
         players_object[key]['build'].sort(key=lambda x: x[1])
@@ -110,23 +158,32 @@ def main():
     path = sys.argv[1]
     replay = sc2reader.load_replay(path)
 
-    players = {
-        'player1': {'name': replay.teams[0].players[0].name,
-                    'build': []
-                    },
-        'player2': {'name': replay.teams[1].players[0].name,
-                    'build': []
-                    },
-    }
+    try:
+        players = {
+            'player1': {'name': replay.teams[0].players[0].name,
+                        'build': []
+                        },
+            'player2': {'name': replay.teams[1].players[0].name,
+                        'build': []
+                        },
+        }
+    except IndexError:
+        players = {
+            'player1': {'name': replay.teams[0].players[0].name,
+                        'build': []
+                        },
+        }
 
     create_path('builds')
     get_build_order(players, replay)
-    player1 = players['player1']
-    player2 = players['player2']
 
-    pprint(player1)
-    pprint(player2)
-    json_file_creator(player1, player2)
+    player1 = players['player1']
+    try:
+        player2 = players['player2']
+    except KeyError:
+        player2 = ""
+
+    # json_file_creator(player1, player2)
 
 
 if __name__ == '__main__':
