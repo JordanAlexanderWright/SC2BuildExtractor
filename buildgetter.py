@@ -89,8 +89,6 @@ def get_build_order(players_object, loaded_replay):
                         if "Orbital" in name or "Planetary" in name:
                             pass
                         else:
-                            print(name)
-                            print(event.second / 1.4)
                             upgrade_name = name
                             upgrade_time = event.second / 1.4
                             upgrade_supply = 0
@@ -111,7 +109,6 @@ def get_build_order(players_object, loaded_replay):
             item[2] = 0 + supply_count
             supply_count += unit_supply
 
-    print(upgrade_list)
     return players_object
 
 
