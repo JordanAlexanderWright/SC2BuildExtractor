@@ -5,7 +5,7 @@ from math import floor
 from jsonexport import *
 
 
-def formatReplay(replay):
+def format_replay(replay):
     return """
 
 {filename}
@@ -38,8 +38,8 @@ build_times = {
     'raven': 43,
     'battlecruiser': 64,
     'planetaryfortress': 36,
-
 }
+
 
 # This function takes the data object to save the build order to, and the replay it is pulling information from
 # Then does a check to see what kind of event happened, parses the data, then saves it.
@@ -86,13 +86,16 @@ def get_build_order(players_object, loaded_replay):
                 try:
                     name = event.ability.name
                     if "Research" in name or "Upgrade" in name or "Terran" in name:
-                        print(name)
-                        print(event.second / 1.4)
-                        upgrade_name = name
-                        upgrade_time = event.second / 1.4
-                        upgrade_supply = 0
+                        if "Orbital" in name or "Planetary" in name:
+                            pass
+                        else:
+                            print(name)
+                            print(event.second / 1.4)
+                            upgrade_name = name
+                            upgrade_time = event.second / 1.4
+                            upgrade_supply = 0
 
-                        building.append([upgrade_name, upgrade_time, upgrade_supply])
+                            building.append([upgrade_name, upgrade_time, upgrade_supply])
                 except AttributeError:
                     pass
 
@@ -110,15 +113,6 @@ def get_build_order(players_object, loaded_replay):
 
     print(upgrade_list)
     return players_object
-
-
-def contains_substring(sub_string, parent_string):
-
-    try:
-        parent_string.index(sub_string)
-        return True
-    except:
-        return False
 
 
 def main():
