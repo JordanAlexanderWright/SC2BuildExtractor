@@ -26,7 +26,7 @@ You will then be prompted to give you files a name, and that's it!
 
 Here's an example:
 
-[![example-screenshot]]
+![example-screenshot]
 
 After that, if you have never run this script before, a build folder
 will be created in your local repository, where you can find the 
