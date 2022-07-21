@@ -46,6 +46,14 @@ build_times = {
 
 def get_build_order(players_object, loaded_replay):
 
+    # Setting player races
+    players_object['player1']['race'] = loaded_replay.players[0].detail_data['race'].lower()
+
+    try:
+        players_object['player2']['race'] = loaded_replay.players[1].detail_data['race'].lower()
+    except:
+        pass
+
     # Getting lists for each player
 
     for key in players_object.keys():

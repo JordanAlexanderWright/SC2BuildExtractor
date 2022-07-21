@@ -84,10 +84,19 @@ upgrade_times = {
 def get_build_order(players_object, loaded_replay):
 
     # Getting lists for each player
+    # Setting the races for each player
+
+    players_object['player1']['race'] = loaded_replay.players[0].detail_data['race'].lower()
+
+    try:
+        players_object['player2']['race'] = loaded_replay.players[1].detail_data['race'].lower()
+    except:
+        pass
 
     for key in players_object.keys():
         building = []
         upgrade_list = []
+
         for event in loaded_replay.events:
 
             if event.second > 0:
@@ -96,18 +105,17 @@ def get_build_order(players_object, loaded_replay):
                     pass
 
                 if event.name == 'UpgradeCompleteEvent':
+                    # if event.unit_controller.name == players_object[key]['name']:
+                        name = event.upgrade_type_name
 
-                    name = event.upgrade_type_name
 
-                    # print(name)
-                    if name.lower() in upgrade_times:
+                        if name.lower() in upgrade_times:
 
-                        upgrade_name = name
-                        upgrade_time = (event.second / 1.4) - upgrade_times[name.lower()]
-                        upgrade_supply = 0
+                            upgrade_name = name
+                            upgrade_time = (event.second / 1.4) - upgrade_times[name.lower()]
+                            upgrade_supply = 0
 
-                        building.append([upgrade_name, upgrade_time, upgrade_supply])
-                    # print([upgrade_name, upgrade_time, upgrade_supply])
+                            building.append([upgrade_name, upgrade_time, upgrade_supply])
 
                 if event.name == 'UnitBornEvent':
                     if event.unit_controller.name == players_object[key]['name']:
@@ -123,7 +131,6 @@ def get_build_order(players_object, loaded_replay):
                             converted_start_time = (born_time / 1.4 - build_times[unit_name.lower()])
 
                             building.append([unit_name, converted_start_time, unit_supply])
-                            # print([unit_name, converted_start_time, unit_supply])
 
                         except:
                             pass
@@ -135,18 +142,16 @@ def get_build_order(players_object, loaded_replay):
                         unit_supply = 0
 
                         building.append([unit_name, unit_time, unit_supply])
-                        # print([unit_name, unit_time, unit_supply])
 
                 try:
                     name = event.ability.name
                     if 'Lair' in name or 'Hive' in name:
-                        print(name)
+
                         upgrade_name = name
                         upgrade_time = event.second / 1.4
                         upgrade_supply = 0
 
                         building.append([upgrade_name, upgrade_time, upgrade_supply])
-                        print([upgrade_name, upgrade_time, upgrade_supply])
 
                 except AttributeError:
                     pass
@@ -154,6 +159,10 @@ def get_build_order(players_object, loaded_replay):
         # Have to sort the build items before doing supply, due to it being out of the "event" order
         players_object[key]['build'] = building
         players_object[key]['build'].sort(key=lambda x: x[1])
+
+        pprint(loaded_replay.players[0].detail_data['race'])
+
+        race = ''
 
         # Creating a supply data point
         supply_count = 12
@@ -163,9 +172,8 @@ def get_build_order(players_object, loaded_replay):
             item[2] = 0 + supply_count
             supply_count += unit_supply
 
-
     pprint(players_object)
-    return players_object
+    # return players_object
 
 
 def main():
@@ -198,7 +206,7 @@ def main():
     except KeyError:
         player2 = ""
 
-    json_file_creator(player1, player2)
+    # json_file_creator(player1, player2)
 
 
 if __name__ == '__main__':

@@ -48,10 +48,20 @@ build_times = {
 
 def get_build_order(players_object, loaded_replay):
 
+
+    # Setting player races
+    players_object['player1']['race'] = loaded_replay.players[0].detail_data['race'].lower()
+
+    try:
+        players_object['player2']['race'] = loaded_replay.players[1].detail_data['race'].lower()
+    except:
+        pass
+
     # Getting lists for each player
 
     for key in players_object.keys():
         building = []
+        race = []
         upgrade_list = []
 
         for event in loaded_replay.events:
@@ -69,7 +79,7 @@ def get_build_order(players_object, loaded_replay):
                         building.append([unit_name, unit_time, unit_supply])
                 try:
                     name = event.ability.name
-                    print(name)
+
                     if "Research" in name or "Upgrade" in name:
                         upgrade_name = name
                         upgrade_time = event.second / 1.4
@@ -127,9 +137,11 @@ def main():
     try:
         players = {
             'player1': {'name': replay.teams[0].players[0].name,
+                        'race': '',
                         'build': []
                         },
             'player2': {'name': replay.teams[1].players[0].name,
+                        'race': '',
                         'build': []
                         },
         }
