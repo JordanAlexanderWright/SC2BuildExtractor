@@ -184,15 +184,18 @@ def main():
     try:
         players = {
             'player1': {'name': replay.teams[0].players[0].name,
+                        'race': '',
                         'build': []
                         },
             'player2': {'name': replay.teams[1].players[0].name,
+                        'race': '',
                         'build': []
                         },
         }
     except IndexError:
         players = {
             'player1': {'name': replay.teams[0].players[0].name,
+                        'race': '',
                         'build': []
                         },
         }

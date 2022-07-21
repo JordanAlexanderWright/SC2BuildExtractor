@@ -148,6 +148,7 @@ def main():
     except IndexError:
         players = {
             'player1': {'name': replay.teams[0].players[0].name,
+                        'race': '',
                         'build': []
                         },
         }
