@@ -42,35 +42,40 @@ build_times = {
 
 upgrade_times = {
 
-    'zergmeleeweaponslevel1': 'Melee Attacks +1',
-    'zergmeleeweaponslevel2': 'Melee Attacks +2',
-    'zergmeleeweaponslevel2': 'Melee Attacks +3',
-    'zergmissileweaponslevel1': 'Missile Attacks +1',
-    'zergmissileweaponslevel2': 'Missile Attacks +2',
-    'zergmissileweaponslevel3': 'Missile Attacks +3',
-    'zerggroundarmorslevel1': 'Ground Carapace +1',
-    'zerggroundarmorslevel2': 'Ground Carapace +2',
-    'zerggroundarmorslevel3': 'Ground Carapace +3',
-    'zergflyerarmorslevel1': 'Flyer Carapace +1',
-    'zergflyerarmorslevel2': 'Flyer Carapace +2',
-    'zergflyerarmorslevel3': 'Flyer Carapace +3',
-    'zergflyerweaponslevel1': 'Flyer Attacks +1',
-    'zergflyerweaponslevel2': 'Flyer Attacks +2',
-    'zergflyerweaponslevel3': 'Flyer Attacks +3',
-    'zerglingmovementspeed': 'Metabolic Boost',
-    'glialreconstitution': 'Glial reconstitution',
-    'evlovegroovedspines': 'Grooved Spines',
-    'infestorenergyupgrade': 'Pathogen Glands',
-    'overlordspeed': 'Pneumatized Carapzce',
-    'tunnelingclaws': 'Tunneling Claws',
-    'evolvemuscularaugments': 'Muscular Augments',
-    'zerglingattackspeed': 'Adrenal Glands',
-    'burrow': 'Burrow',
-    'lurkerrange': 'Seismic Spines',
-    'chitinousplating': 'Chitinous Plating',
-    'anabolicsynthesis': 'Anabolic Synthesis',
-    'centrifugalhooks': 'Centrifugal Hooks'
+    'zergmeleeweaponslevel1': 114,
+    'zergmeleeweaponslevel2': 136,
+    'zergmeleeweaponslevel3': 157,
+    'zergmissileweaponslevel1': 114,
+    'zergmissileweaponslevel2': 136,
+    'zergmissileweaponslevel3': 157,
+    'zerggroundarmorslevel1': 114,
+    'zerggroundarmorslevel2': 136,
+    'zerggroundarmorslevel3': 157,
+    'zergflyerarmorslevel1': 114,
+    'zergflyerarmorslevel2': 136,
+    'zergflyerarmorslevel3': 157,
+    'zergflyerweaponslevel1': 114,
+    'zergflyerweaponslevel2': 136,
+    'zergflyerweaponslevel3': 157,
+    'zerglingmovementspeed': 79,
+    'glialreconstitution': 79,
+    'evlovegroovedspines': 71,
+    'infestorenergyupgrade': 57,
+    'overlordspeed': 43,
+    'tunnelingclaws': 79,
+    'evolvemuscularaugments': 71,
+    'zerglingattackspeed': 93,
+    'burrow': 71,
+    'lurkerrange': 57,
+    'chitinousplating': 79,
+    'anabolicsynthesis': 43,
+    'centrifugalhooks': 79,
+    'neuralparasite': 79,
+    'adaptivetalons': 57
 }
+
+# Lair: 57
+# Greater Spire: 71
 
 
 # This function takes the data object to save the build order to, and the replay it is pulling information from
@@ -94,116 +99,74 @@ def get_build_order(players_object, loaded_replay):
 
                     name = event.upgrade_type_name
 
+                    # print(name)
                     if name.lower() in upgrade_times:
 
-                        print(name)
-                        pprint(dir(event))
-                        print(event.count)
                         upgrade_name = name
-                        upgrade_time = event.second / 1.4
+                        upgrade_time = (event.second / 1.4) - upgrade_times[name.lower()]
                         upgrade_supply = 0
 
                         building.append([upgrade_name, upgrade_time, upgrade_supply])
                     # print([upgrade_name, upgrade_time, upgrade_supply])
 
-                # except AttributeError:
-                #     pass
-                # try:
-                #     name = event.ability.name
-                #
-                #     # if "Research" in name or "Upgrade" in name:
-                #     #     # print(name)
-                #     upgrade_name = name
-                #     upgrade_time = event.second / 1.4
-                #     upgrade_supply = 0
-                #
-                #     building.append([upgrade_name, upgrade_time, upgrade_supply])
-                #     print([upgrade_name, upgrade_time, upgrade_supply])
-                #
-                # except AttributeError:
-                #     pass
+                if event.name == 'UnitBornEvent':
+                    if event.unit_controller.name == players_object[key]['name']:
+
+                        unit_name = event.unit.name
+                        born_time = event.second
+                        unit_supply = event.unit.supply
+
+                        try:
+
+                            # Born time /1.4 because the built-in seconds are sped up to 1.4 speed,
+                            # for faster game mode
+                            converted_start_time = (born_time / 1.4 - build_times[unit_name.lower()])
+
+                            building.append([unit_name, converted_start_time, unit_supply])
+                            # print([unit_name, converted_start_time, unit_supply])
+
+                        except:
+                            pass
+
+                if event.name == 'UnitInitEvent':
+                    if event.unit_controller.name == players_object[key]['name']:
+                        unit_name = event.unit.name
+                        unit_time = event.second / 1.4
+                        unit_supply = 0
+
+                        building.append([unit_name, unit_time, unit_supply])
+                        # print([unit_name, unit_time, unit_supply])
+
+                try:
+                    name = event.ability.name
+                    if 'Lair' in name or 'Hive' in name:
+                        print(name)
+                        upgrade_name = name
+                        upgrade_time = event.second / 1.4
+                        upgrade_supply = 0
+
+                        building.append([upgrade_name, upgrade_time, upgrade_supply])
+                        print([upgrade_name, upgrade_time, upgrade_supply])
+
+                except AttributeError:
+                    pass
+
+        # Have to sort the build items before doing supply, due to it being out of the "event" order
+        players_object[key]['build'] = building
+        players_object[key]['build'].sort(key=lambda x: x[1])
+
+        # Creating a supply data point
+        supply_count = 12
+        for item in players_object[key]['build']:
+            item[1] = floor(item[1])
+            unit_supply = item[2]
+            item[2] = 0 + supply_count
+            supply_count += unit_supply
 
 
-                # if event.name == 'UnitBornEvent':
-                #     if event.unit_controller.name == players_object[key]['name']:
-                #
-                #         unit_name = event.unit.name
-                #         born_time = event.second
-                #         unit_supply = event.unit.supply
-                #
-                #         try:
-                #
-                #             # Born time /1.4 because the built-in seconds are sped up to 1.4 speed,
-                #             # for faster game mode
-                #             converted_start_time = (born_time / 1.4 - build_times[unit_name.lower()])
-                #
-                #             # building.append([unit_name, converted_start_time, unit_supply])
-                #             print([unit_name, converted_start_time, unit_supply])
-                #
-                #         except:
-                #             pass
+    pprint(players_object)
+    return players_object
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        # if event.name == 'UnitInitEvent':
-                        #     if event.unit_controller.name == players_object[key]['name']:
-                        #         unit_name = event.unit.name
-                        #         unit_time = event.second / 1.4
-                        #         unit_supply = 0
-                        #
-                        #         # building.append([unit_name, unit_time, unit_supply])
-                        #         print([unit_name, unit_time, unit_supply])
-
-    #
-    #             try:
-    #                 if event.name == 'UnitBornEvent':
-    #                     if event.unit_controller.name == players_object[key]['name']:
-    #
-    #                         unit_name = event.unit.name
-    #                         born_time = event.second
-    #                         unit_supply = event.unit.supply
-    #
-    #                         try:
-    #
-    #                             # Born time /1.4 because the built-in seconds are sped up to 1.4 speed,
-    #                             # for faster game mode
-    #                             converted_start_time = (born_time/1.4 - build_times[unit_name.lower()])
-    #
-    #                             building.append([unit_name, converted_start_time, unit_supply])
-    #                             print([unit_name, converted_start_time, unit_supply])
-    #
-    #                         except KeyError:
-    #                             pass
-    #
-    #             except AttributeError:
-    #                 pass
-    #
-    #     # Have to sort the build items before doing supply, due to it being out of the "event" order
-    #     players_object[key]['build'] = building
-    #     players_object[key]['build'].sort(key=lambda x: x[1])
-    #
-    #     # Creating a supply data point
-    #     supply_count = 12
-    #     for item in players_object[key]['build']:
-    #         item[1] = floor(item[1])
-    #         unit_supply = item[2]
-    #         item[2] = 0 + supply_count
-    #         supply_count += unit_supply
-    #
-    # return players_object
-    #
 
 def main():
 
@@ -226,7 +189,7 @@ def main():
                         },
         }
 
-    # create_path('builds')
+    create_path('builds')
     get_build_order(players, replay)
 
     player1 = players['player1']
@@ -235,7 +198,7 @@ def main():
     except KeyError:
         player2 = ""
 
-    # json_file_creator(player1, player2)
+    json_file_creator(player1, player2)
 
 
 if __name__ == '__main__':
