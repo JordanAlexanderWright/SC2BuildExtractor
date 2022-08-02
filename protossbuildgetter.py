@@ -1,132 +1,120 @@
 import sys
 import sc2reader
-from pprint import pprint
 from math import floor
 from jsonexport import *
 
 
-def format_replay(replay):
-    return """
+class ProtossBuildGetter:
+    def __init__(self, replay_data):
+        self.build_times = {
+            'probe': 12,
+            'zealot': 27,
+            'sentry': 26,
+            'stalker': 30,
+            'adept': 30,
+            'hightemplar': 39,
+            'darktemplar': 39,
+            'archon': 8.57,
+            'observer': 21,
+            'warpprism': 36,
+            'immortal': 39,
+            'colossus': 54,
+            'disruptor': 36,
+            'phoenix': 25,
+            'voidray': 43,
+            'oracle': 37,
+            'tempest': 43,
+            'carrier': 64,
+            'interceptor': 11,
+            'mothership': 114,
+            'photoncannon': 29
+        }
 
-{filename}
---------------------------------------------
-SC2 Version {release_string}
-{category} Game, {start_time}
-{type} on {map_name}
-Length: {game_length}
+        self.replay_data = replay_data
 
-""".format(**replay.__dict__)
+    # This function takes the data object to save the build order to, and the replay it is pulling information from
+    # Then does a check to see what kind of event happened, parses the data, then saves it.
 
+    def get_build_order(self, players_object, loaded_replay):
 
-build_times = {
-    'probe': 12,
-    'zealot': 27,
-    'sentry': 26,
-    'stalker': 30,
-    'adept': 30,
-    'hightemplar': 39,
-    'darktemplar': 39,
-    'archon': 8.57,
-    'observer': 21,
-    'warpprism': 36,
-    'immortal': 39,
-    'colossus': 54,
-    'disruptor': 36,
-    'phoenix': 25,
-    'voidray': 43,
-    'oracle': 37,
-    'tempest': 43,
-    'carrier': 64,
-    'interceptor': 11,
-    'mothership': 114,
-    'photoncannon': 29
-}
+        # Setting player races
+        players_object['player1']['race'] = loaded_replay.players[0].detail_data['race'].lower()
 
+        try:
+            players_object['player2']['race'] = loaded_replay.players[1].detail_data['race'].lower()
+        except:
+            pass
 
-# This function takes the data object to save the build order to, and the replay it is pulling information from
-# Then does a check to see what kind of event happened, parses the data, then saves it.
+        # Getting lists for each player
 
-def get_build_order(players_object, loaded_replay):
+        for key in players_object.keys():
+            building = []
+            race = []
+            upgrade_list = []
 
+            for event in loaded_replay.events:
+                if event.second > 0:
 
-    # Setting player races
-    players_object['player1']['race'] = loaded_replay.players[0].detail_data['race'].lower()
+                    if event.name == 'CameraEvent' or event.name == 'GetControlGroupEvent' or event.name == 'SelectionEvent':
+                        pass
 
-    try:
-        players_object['player2']['race'] = loaded_replay.players[1].detail_data['race'].lower()
-    except:
-        pass
-
-    # Getting lists for each player
-
-    for key in players_object.keys():
-        building = []
-        race = []
-        upgrade_list = []
-
-        for event in loaded_replay.events:
-            if event.second > 0:
-
-                if event.name == 'CameraEvent' or event.name == 'GetControlGroupEvent' or event.name == 'SelectionEvent':
-                    pass
-
-                if event.name == 'UnitInitEvent':
-                    if event.unit_controller.name == players_object[key]['name']:
-                        unit_name = event.unit.name
-                        unit_time = event.second / 1.4
-                        unit_supply = 0
-
-                        building.append([unit_name, unit_time, unit_supply])
-                try:
-                    name = event.ability.name
-
-                    if "Research" in name or "Upgrade" in name:
-                        upgrade_name = name
-                        upgrade_time = event.second / 1.4
-                        upgrade_supply = 0
-
-                        building.append([upgrade_name, upgrade_time, upgrade_supply])
-                        print([upgrade_name, upgrade_time, upgrade_supply])
-
-                except AttributeError:
-                    pass
-
-                try:
-                    if event.name == 'UnitBornEvent':
+                    if event.name == 'UnitInitEvent':
                         if event.unit_controller.name == players_object[key]['name']:
-
                             unit_name = event.unit.name
-                            born_time = event.second
-                            unit_supply = event.unit.supply
+                            unit_time = event.second / 1.4
+                            unit_supply = 0
 
-                            try:
+                            building.append([unit_name, unit_time, unit_supply])
+                    try:
+                        name = event.ability.name
 
-                                # Born time /1.4 because the built-in seconds are sped up to 1.4 speed,
-                                # for faster game mode
-                                converted_start_time = (born_time/1.4 - build_times[unit_name.lower()])
+                        if "Research" in name or "Upgrade" in name:
+                            upgrade_name = name
+                            upgrade_time = event.second / 1.4
+                            upgrade_supply = 0
 
-                                building.append([unit_name, converted_start_time, unit_supply])
-                                print([unit_name, converted_start_time, unit_supply])
+                            building.append([upgrade_name, upgrade_time, upgrade_supply])
+                            print([upgrade_name, upgrade_time, upgrade_supply])
 
-                            except KeyError:
-                                pass
+                    except AttributeError:
+                        pass
 
-                except AttributeError:
-                    pass
+                    try:
+                        if event.name == 'UnitBornEvent':
+                            if event.unit_controller.name == players_object[key]['name']:
 
-        # Have to sort the build items before doing supply, due to it being out of the "event" order
-        players_object[key]['build'] = building
-        players_object[key]['build'].sort(key=lambda x: x[1])
+                                unit_name = event.unit.name
+                                born_time = event.second
+                                unit_supply = event.unit.supply
 
-        # Creating a supply data point
-        supply_count = 12
-        for item in players_object[key]['build']:
-            item[1] = floor(item[1])
-            unit_supply = item[2]
-            item[2] = 0 + supply_count
-            supply_count += unit_supply
+                                try:
 
-    return players_object
+                                    # Born time /1.4 because the built-in seconds are sped up to 1.4 speed,
+                                    # for faster game mode
+                                    converted_start_time = (born_time/1.4 - self.build_times[unit_name.lower()])
+
+                                    building.append([unit_name, converted_start_time, unit_supply])
+                                    print([unit_name, converted_start_time, unit_supply])
+
+                                except KeyError:
+                                    pass
+
+                    except AttributeError:
+                        pass
+
+            # Have to sort the build items before doing supply, due to it being out of the "event" order
+            players_object[key]['build'] = building
+            players_object[key]['build'].sort(key=lambda x: x[1])
+
+            # Creating a supply data point
+            supply_count = 12
+            for item in players_object[key]['build']:
+                item[1] = floor(item[1])
+                unit_supply = item[2]
+                item[2] = 0 + supply_count
+                supply_count += unit_supply
+
+        return players_object
 
 
 def main():

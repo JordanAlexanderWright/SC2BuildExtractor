@@ -160,10 +160,6 @@ def get_build_order(players_object, loaded_replay):
         players_object[key]['build'] = building
         players_object[key]['build'].sort(key=lambda x: x[1])
 
-        pprint(loaded_replay.players[0].detail_data['race'])
-
-        race = ''
-
         # Creating a supply data point
         supply_count = 12
         for item in players_object[key]['build']:
@@ -172,8 +168,8 @@ def get_build_order(players_object, loaded_replay):
             item[2] = 0 + supply_count
             supply_count += unit_supply
 
-    pprint(players_object)
-    # return players_object
+    # pprint(players_object)
+    return players_object
 
 
 def main():
@@ -209,7 +205,7 @@ def main():
     except KeyError:
         player2 = ""
 
-    # json_file_creator(player1, player2)
+    json_file_creator(player1, player2)
 
 
 if __name__ == '__main__':
