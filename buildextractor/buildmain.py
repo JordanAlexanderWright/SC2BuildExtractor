@@ -1,10 +1,9 @@
-from protossbuildgetter import ProtossBuildGetter
-import sys
+from extractorscripts.protossbuildgetter import ProtossBuildGetter
+from sys import argv
 import sc2reader
-from zergbuildgetter import ZergBuildGetter
-from terranbuildgetter import *
-from jsonexport import *
-
+from extractorscripts.zergbuildgetter import ZergBuildGetter
+from extractorscripts.terranbuildgetter import *
+from data.jsonexport import *
 
 # def format_replay(replay):
 #     return """
@@ -21,7 +20,7 @@ from jsonexport import *
 
 def main():
 
-    path = sys.argv[1]
+    path = argv[1]
     loaded_replay = sc2reader.load_replay(path)
 
     try:

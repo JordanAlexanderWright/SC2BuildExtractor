@@ -49,4 +49,4 @@ I'd also like to thank @Graylin Kim and his library: SC2Reader that made this al
 
 https://github.com/ggtracker/sc2reader
 
-[example-screenshot]: images/screenshot.png
+[example-screenshot]: buildextractor/images/screenshot.png
