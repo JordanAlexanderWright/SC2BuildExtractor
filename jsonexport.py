@@ -17,19 +17,21 @@ def create_path(folder_name):
 # Player 2 is not required, could be a solo game for testing
 def json_file_creator(player1, player2=None):
 
-    file_name = input('What would you like to name the game?')
-
-    # Saving a build order for player1
-    with open(f'./builds/{file_name}{player1["name"]}.json', 'w', encoding='utf-8') as f:
-        json.dump(player1, f, ensure_ascii=False, indent=4)
-        f.close()
-
     if player2:
-        with open(f'./builds/{file_name}{player2["name"]}.json', 'w', encoding='utf-8') as f:
-            json.dump(player2, f, ensure_ascii=False, indent=4)
+        players = [player1, player2]
+        print(players)
+    else:
+        players = [player1]
+
+    for player in players:
+        file_name = input(f'What would you like to name the build for {player["name"]}?')
+
+        # Saving a build order for player1
+        with open(f'./builds/{file_name}{player["name"]}.json', 'w', encoding='utf-8') as f:
+            json.dump(player, f, ensure_ascii=False, indent=4)
             f.close()
 
-    # Saving Creating a build order for player2
+        # Saving Creating a build order for player2
 
 
 if __name__ == "__main__":

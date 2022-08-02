@@ -20,7 +20,7 @@ https://github.com/GraylinKim/sc2reader
 Locate the file in which you have a StarCraft2 replay saved and use the following input on the command line:
 
   ```sh
-  python buildgetter.py "PATHTOYOURREPLAY.SC2Replay"
+  python terranbuildgetter.py "PATHTOYOURREPLAY.SC2Replay"
   ```
 You will then be prompted to give you files a name, and that's it!
 

@@ -1,7 +1,4 @@
-import sys
-import sc2reader
 from math import floor
-from jsonexport import *
 
 
 class ProtossBuildGetter:

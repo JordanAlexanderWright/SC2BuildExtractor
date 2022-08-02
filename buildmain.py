@@ -1,9 +1,22 @@
 from protossbuildgetter import ProtossBuildGetter
 import sys
-import sc2reader
-from zergbuildgetter import *
-from buildgetter import *
+from sc2reader import *
+from zergbuildgetter import ZergBuildGetter
+from terranbuildgetter import *
 from jsonexport import *
+
+
+def format_replay(replay):
+    return """
+
+{filename}
+--------------------------------------------
+SC2 Version {release_string}
+{category} Game, {start_time}
+{type} on {map_name}
+Length: {game_length}
+
+""".format(**replay.__dict__)
 
 
 def main():
@@ -48,7 +61,8 @@ def main():
                 players[key] = build_extractor.get_build_order()
 
             case 'terran':
-                print("WTF a TERRAN?")
+                build_extractor = TerranBuildGetter(loaded_replay, players[key])
+                players[key] = build_extractor.get_build_order()
 
             case 'protoss':
                 build_extractor = ProtossBuildGetter(loaded_replay, players[key])

@@ -1,8 +1,4 @@
-import sys
-import sc2reader
-from pprint import pprint
 from math import floor
-from jsonexport import *
 
 
 class ZergBuildGetter:
