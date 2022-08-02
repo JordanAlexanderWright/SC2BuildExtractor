@@ -38,27 +38,31 @@ def main():
     except:
         pass
 
+    # This for loops takes each player, matches their race to a case, then runs the appropriate build extractor
     for key in players.keys():
 
-       match players[key]['race']:
-           case 'zerg':
-               print("It's a wild Zerg")
-           case 'terran':
-               print("WTF a TERRAN?")
-           case 'protoss':
-               print('FUCK, INVISIBLE MEN INC')
+        match players[key]['race']:
 
+            case 'zerg':
+                build_extractor = ZergBuildGetter(loaded_replay, players[key])
+                players[key] = build_extractor.get_build_order()
 
-    # create_path('builds')
-    # get_build_order(players, replay)
-    #
-    # player1 = players['player1']
-    # try:
-    #     player2 = players['player2']
-    # except KeyError:
-    #     player2 = ""
-    #
-    # json_file_creator(player1, player2)
+            case 'terran':
+                print("WTF a TERRAN?")
+
+            case 'protoss':
+                build_extractor = ProtossBuildGetter(loaded_replay, players[key])
+                players[key] = build_extractor.get_build_order()
+
+    create_path('builds')
+
+    player1 = players['player1']
+    try:
+        player2 = players['player2']
+    except KeyError:
+        player2 = ""
+
+    json_file_creator(player1, player2)
 
 
 if __name__ == '__main__':
