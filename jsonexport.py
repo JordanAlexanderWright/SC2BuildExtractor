@@ -19,12 +19,12 @@ def json_file_creator(player1, player2=None):
 
     if player2:
         players = [player1, player2]
-        print(players)
+
     else:
         players = [player1]
 
     for player in players:
-        file_name = input(f'What would you like to name the build for {player["name"]}?')
+        file_name = input(f'What would you like to name the build for {player["name"]}? ')
 
         # Saving a build order for player1
         with open(f'./builds/{file_name}{player["name"]}.json', 'w', encoding='utf-8') as f:

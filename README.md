@@ -4,25 +4,26 @@ Project Goal:
 ---
 The goal of this project was to create a tool that can extract build orders out of 
 StarCraft2 replay files.<br> These builds are sent out as JSON formatted data, which can then be
-plugged into the accompaning application I am working on. 
+plugged into the accompanying application I am working on. 
 
 That application can be found here:  
 https://github.com/Soule222/sc2BuildPractice
 
-This project currently only works with the Terran race, more updates to come  
+This project is (mostly) fully functional with Terran, and will mostly work with Zerg and Protoss, but
+their supply counters are currently wrong and there may be some missing build items still. 
 
 **Getting Started / Usage**
 ---
 
 Make sure to install SC2Reader via pip or it's associated GitHub page:   
-https://github.com/GraylinKim/sc2reader
+https://github.com/ggtracker/sc2reader
 
 Locate the file in which you have a StarCraft2 replay saved and use the following input on the command line:
 
   ```sh
-  python terranbuildgetter.py "PATHTOYOURREPLAY.SC2Replay"
+  python buildmain.py "PATHTOYOURREPLAY.SC2Replay"
   ```
-You will then be prompted to give you files a name, and that's it!
+You will then be prompted to give your files names, and that's it!
 
 Here's an example:
 
@@ -46,6 +47,6 @@ Unfortunately Blizzard doesn't also include a copyright notice on their webpage 
 
 I'd also like to thank @Graylin Kim and his library: SC2Reader that made this all possible:
 
-https://github.com/GraylinKim/sc2reader
+https://github.com/ggtracker/sc2reader
 
 [example-screenshot]: images/screenshot.png

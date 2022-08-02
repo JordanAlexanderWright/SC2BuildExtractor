@@ -1,22 +1,22 @@
 from protossbuildgetter import ProtossBuildGetter
 import sys
-from sc2reader import *
+import sc2reader
 from zergbuildgetter import ZergBuildGetter
 from terranbuildgetter import *
 from jsonexport import *
 
 
-def format_replay(replay):
-    return """
-
-{filename}
---------------------------------------------
-SC2 Version {release_string}
-{category} Game, {start_time}
-{type} on {map_name}
-Length: {game_length}
-
-""".format(**replay.__dict__)
+# def format_replay(replay):
+#     return """
+#
+# {filename}
+# --------------------------------------------
+# SC2 Version {release_string}
+# {category} Game, {start_time}
+# {type} on {map_name}
+# Length: {game_length}
+#
+# """.format(**replay.__dict__)
 
 
 def main():
