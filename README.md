@@ -9,7 +9,7 @@ plugged into the accompanying application I am working on.
 That application can be found here:  
 https://github.com/Soule222/sc2BuildPractice
 
-This project is (mostly) fully functional with Terran, and will mostly work with Zerg and Protoss, but
+This project is fully functional with Terran, and will mostly work with Zerg and Protoss, but
 their supply counters are currently wrong and there may be some missing build items still. 
 
 **Getting Started / Usage**

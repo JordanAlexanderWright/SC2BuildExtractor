@@ -17,6 +17,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\LICENSE.txt">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\README.md">
           <value>
             <Attribute>
